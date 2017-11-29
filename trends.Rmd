@@ -1,5 +1,5 @@
 ---
-title: "trends"
+title: "League of Legends Trend"
 author: "Chanwoo Kim"
 date: "2017년 11월 29일"
 output: html_document
@@ -9,22 +9,26 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Hit number of keyword "League of Legends"
+```{r}
+library(gtrendsR)
+library(ggplot2)
+library(tidyverse)
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+lol.trend <- gtrends(c("league of legends"), gprop = "web", time = "all")[[1]]
+class(lol.trend)
+head(lol.trend)
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
 ```
 
 ## Including Plots
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+We can see there is little upward jump of hits after 2016 LOL WORLD CHAMPIONSHIP. 
+```{r}
+ggplot(data = lol.trend) + geom_line(mapping = aes(x= date, y = hits))
+lol.trend <- lol.trend %>% filter(date >= as.Date("2009-01-01"))
+ggplot(data = lol.trend) + 
+geom_line(mapping = aes(x= date, y = hits)) +
+geom_vline(xintercept = as.Date("2016-06-30"), color = "red") ## LOL WORLD CHAMPIONSHIP
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
